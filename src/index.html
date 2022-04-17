@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <title>Start Your Engines!</title>
+        <link rel="stylesheet" type="text/css" href="./lib/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="./app.css" /> 
+    </head>
+    <body>
+        <h1>Start Your Engines</h1>
+
+        <div id="application">
+            <div class="row">
+                <div class="col-2">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary" id="addApplication">Add</button>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                        <button type="button" class="btn btn-secondary">Move Up</button>
+                        <button type="button" class="btn btn-secondary">Move Down</button>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Start</th>
+                                <th>Name</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: applications">
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input" /></td>
+                                <td><input type="text" class="form-control" disabled data-bind="value: applicationName" /></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary">Move Up</button>
+                                    <button type="button" class="btn btn-secondary">Move Down</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-lg btn-success">Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-center">Node.js <span id="node-version"></span> | Chromium <span id="chrome-version"></span> | Electron <span id="electron-version"></span></p>
+
+        <script type="text/javascript" src="./lib/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" src="./lib/bootstrap.bundle-5.3.1.min.js"></script>
+        <script type="text/javascript" src="./lib/knockout-3.5.0.min.js"></script>
+        <script type="text/javascript" src="./lib/renderer.js"></script>
+    </body>
+</html>
