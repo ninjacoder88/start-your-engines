@@ -1,5 +1,4 @@
-$().ready(function(){
-
+jQuery(function(){
     function ViewModel(){
         const self = this;
         self.applications = ko.observableArray([]);

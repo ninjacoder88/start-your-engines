@@ -9,19 +9,18 @@
         <link rel="stylesheet" type="text/css" href="./index.css" /> 
     </head>
     <body>
-        <h1>Start Your Engines</h1>
+        <h1 class="text-center mb-4">Start Your Engines</h1>
 
         <div id="application">
             <div class="row">
-                <div class="col-2">
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary" id="addApplication">Add</button>
-                        <button type="button" class="btn btn-danger">Delete</button>
-                        <button type="button" class="btn btn-secondary">Move Up</button>
-                        <button type="button" class="btn btn-secondary">Move Down</button>
+                <div class="col-md-6 offset-md-3">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Application Name" />
+                        <button class="btn btn-outline-secondary" type="button" id="addApplicationButton">Add</button>
                     </div>
-                </div>
-                <div class="col-10">
+
+                    <hr />
+
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -30,10 +29,10 @@
                                 <th>Edit</th>
                             </tr>
                         </thead>
-                        <tbody data-bind="foreach: applications">
+                        <tbody>
                             <tr>
                                 <td><input type="checkbox" class="form-check-input" /></td>
-                                <td><input type="text" class="form-control" disabled data-bind="value: applicationName" /></td>
+                                <td><input type="text" class="form-control" disabled /></td>
                                 <td>
                                     <button type="button" class="btn btn-danger">Delete</button>
                                     <button type="button" class="btn btn-secondary">Move Up</button>
@@ -48,6 +47,8 @@
                 </div>
             </div>
         </div>
+
+        <hr />
 
         <p class="text-center">Node.js <span id="node-version"></span> | Chromium <span id="chrome-version"></span> | Electron <span id="electron-version"></span></p>
 
