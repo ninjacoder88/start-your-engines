@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; img-src 'self' data:">
         <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
         <title>Start Your Engines!</title>
         <link rel="stylesheet" type="text/css" href="./lib/bootstrap.min.css" />
@@ -15,35 +15,51 @@
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Application Name" id="addApplicationName" />
-                        <input type="text" class="form-control" placeholder="Application Path" id="addApplicationPath" />
-                        <button class="btn btn-outline-secondary" type="button" id="addApplicationButton">Add</button>
+                        <input type="text" class="form-control" placeholder="Application Name" id="addApplicationName" data-bind="value: newApplicationName" />
+                        <input type="text" class="form-control" placeholder="Application Path" id="addApplicationPath" data-bind="value: newApplicationPath" />
+                        <button class="btn btn-outline-secondary" type="button" id="addApplicationButton" data-bind="click: addApplication">Add</button>
                     </div>
 
                     <hr />
 
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Start</th>
-                                <th>Name</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="applicationTableBody">
-                            <tr>
-                                <td><input type="checkbox" class="form-check-input" id="application__launch"/></td>
-                                <td><input type="text" class="form-control" disabled id="application__name" /></td>
-                                <td>
-                                    <button type="button" class="btn btn-danger" id="application__delete">Delete</button>
-                                    <button type="button" class="btn btn-secondary" id="application__moveup">Move Up</button>
-                                    <button type="button" class="btn btn-secondary" id="application__movedown">Move Down</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div data-bind="foreach: applications">
+                        <div class="card bg-dark text-white mb-3">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control" disabled id="application__name" data-bind="value: applicationName"/>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-info" id="application__edit" data-bind="click: edit, hidden: editing">Edit</button>
+                                        <button type="button" class="btn btn-info" id="application__delete" data-bind="click: cancel, visible: editing">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body collapse" data-bind="css: { collapse: editing() === false }">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="application__launch" data-bind="checked: enabled">
+                                    <label class="form-check-label">Enabled</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Application Name</label>
+                                    <input type="text" class="form-control" data-bind="value: applicationName"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Application Path</label>
+                                    <input type="text" class="form-control" data-bind="value: applicationPath"/>
+                                </div>
+                               
+                                
+                                <button type="button" class="btn btn-secondary" id="application__moveup" data-bind="click: moveUp, visible: editing">Move Up</button>
+                                <button type="button" class="btn btn-secondary" id="application__movedown" data-bind="click: moveDown, visible: editing">Move Down</button>
+                                <button type="button" class="btn btn-danger" id="application__delete" data-bind="click: deleteApplication, visible: editing">Delete</button>
+                                
+                                <button type="button" class="btn btn-info" id="application__delete" data-bind="click: cancel, visible: editing">Save</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-lg btn-success" id="startApplicationsButton">Start</button>
+                        <button type="button" class="btn btn-lg btn-success" id="startApplicationsButton" data-bind="click: startApplications">Start</button>
                     </div>
                 </div>
             </div>

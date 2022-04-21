@@ -1,61 +1,72 @@
 jQuery(function(){
-    // function ViewModel(){
-    //     const self = this;
-    //     self.applications = ko.observableArray([]);
+    function Application(obj){
+        const self = this;
+        self.applicationName = ko.observable(obj.applicationName);
+        self.applicationPath = ko.observable(obj.applicationPath);
+        self.enabled = ko.observable(obj.enabled ?? true);
+        self.editing = ko.observable(false);
 
-    //     self.addApplication = function(){
-    //         self.applications.push({applicationName: "Test"});
-    //     };
-    // }
+        self.cancel = function(){
+            self.editing(false);
+        };
 
-    // ko.applyBindings(new ViewModel(), document.getElementById("application"));
+        self.edit = function(){
+            self.editing(true);
+        };
 
-    const applicationTemplate = document.getElementById("applicationTableBody").innerHTML;
-    document.getElementById("applicationTableBody").innerHTML = "";
+        self.deleteApplication = function(){
 
-    const applications = [];
-    let id = 0;
+        };
 
-    document.getElementById("addApplicationButton").addEventListener("click", function(){
-        const applicationName = document.getElementById("addApplicationName").value;
-        const applicationPath = document.getElementById("addApplicationPath").value;
+        self.moveUp = function(){
 
-        if(applicationName === undefined || applicationName === null || applicationName === ""){
-            return;
+        };
+
+        self.moveDown = function(){
+
+        };
+    }
+
+    function ViewModel(){
+        const self = this;
+        self.newApplicationName = ko.observable("");
+        self.newApplicationPath = ko.observable("");
+        self.applications = ko.observableArray([]);
+
+        self.addApplication = function(){
+            if(self.newApplicationName() === "" || self.newApplicationPath() === ""){
+                return;
+            }
+
+            self.applications.push(new Application({
+                    applicationName: self.newApplicationName(),
+                    applicationPath: self.newApplicationPath()
+                }));
+            self.newApplicationName("");
+            self.newApplicationPath("");
+
+            const apps = ko.toJSON(self.applications());
+
+            window.electronAPI.saveData(apps);
+        };
+
+        self.startApplications = function(){
+
+        };
+
+        function initialize(){
+            window.electronAPI.loadData()
+                .then(data => {
+                    data.forEach(d => {
+                        self.applications.push(new Application({applicationName: d.applicationName, applicationPath: d.applicationPath, enabled: d.enabled}));
+                    });
+                }).catch(error => {
+
+                });
         }
 
-        if(applicationPath === undefined || applicationPath === null || applicationPath === ""){
-            return;
-        }
+        initialize();
+    }
 
-        const applicationId = id;
-        applications.push({launch: true, applicationName: applicationName, id: applicationId, applicationPath: applicationPath});
-
-        let application = applicationTemplate;
-        application = application.replaceAll("__", `_${applicationId}_`);//need to make /g/
-
-        document.getElementById("applicationTableBody").insertAdjacentHTML("beforeend", application);
-        document.getElementById(`application_${applicationId}_launch`).value = true;
-        document.getElementById(`application_${applicationId}_name`).value = applicationName;
-        document.getElementById(`application_${applicationId}_delete`).addEventListener("click", function(){
-            //const application = applications.find(a => a.id == applicationId);
-            //const index = applications.indexOf(application);
-            //applications.splice(index, 1);
-        });
-        document.getElementById(`application_${applicationId}_moveup`).addEventListener("click", function(){
-
-        });
-        document.getElementById(`application_${applicationId}_movedown`).addEventListener("click", function(){
-
-        });
-
-        document.getElementById("addApplicationName").value = "";
-        document.getElementById("addApplicationPath").value = "";
-
-        id++;
-    });
-
-    document.getElementById("startApplicationsButton").addEventListener("click", function(){
-        window.alert("starting applications");
-    });
+    ko.applyBindings(new ViewModel(), document.getElementById("application"));
 });
