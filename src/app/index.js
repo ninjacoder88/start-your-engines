@@ -1,4 +1,20 @@
 jQuery(function(){
+    const ps = new PubSub();
+
+    function PubSub(){
+        const self = this;
+        self.subscribtions = [];
+
+        self.publish = function(queueName, message){
+            const queue = self.subscribtions.find(q => q.queueName === queueName);
+            queue.callback(message);
+        };
+
+        self.subscribe = function(queueName, callback){
+            self.subscribtions.push({queueName: queueName, callback: callback});
+        }
+    };
+
     function Application(obj){
         const self = this;
         self.applicationName = ko.observable(obj.applicationName);
@@ -8,6 +24,9 @@ jQuery(function(){
 
         self.cancel = function(){
             self.editing(false);
+            self.applicationName(obj.applicationName);
+            self.applicationPath(obj.applicationPath);
+            self.enabled(obj.enabled ?? true);
         };
 
         self.edit = function(){
@@ -25,6 +44,16 @@ jQuery(function(){
         self.moveDown = function(){
 
         };
+
+        self.save = function(){
+            self.editing(false);
+
+            obj.applicationName = self.applicationName();
+            obj.applicationPath = self.applicationPath();
+            obj.enabled = self.enabled();
+
+            ps.publish("applicationUpdated");
+        };
     }
 
     function ViewModel(){
@@ -32,6 +61,16 @@ jQuery(function(){
         self.newApplicationName = ko.observable("");
         self.newApplicationPath = ko.observable("");
         self.applications = ko.observableArray([]);
+
+        ps.subscribe("applicationUpdated", function(message){
+            saveApplications();
+        });
+
+        function saveApplications(){
+            const apps = ko.toJSON(self.applications());
+
+            window.electronAPI.saveData(apps);
+        }
 
         self.addApplication = function(){
             if(self.newApplicationName() === "" || self.newApplicationPath() === ""){
@@ -44,14 +83,18 @@ jQuery(function(){
                 }));
             self.newApplicationName("");
             self.newApplicationPath("");
-
-            const apps = ko.toJSON(self.applications());
-
-            window.electronAPI.saveData(apps);
+            saveApplications();
         };
 
         self.startApplications = function(){
+            const paths = [];
+            self.applications().forEach(app => {
+                if(app.enabled() === true){
+                    paths.push(app.applicationPath());
+                }
+            });
 
+            window.electronAPI.startApplications(paths);
         };
 
         function initialize(){

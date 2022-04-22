@@ -1,11 +1,12 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const cp = require("child_process");
 
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 500,
+        height: 400,
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         }
@@ -13,10 +14,24 @@ const createWindow = () => {
 
     ipcMain.on('save-data', (event, apps) => {
         try {
-            fs.writeFileSync("c:\\temp\\test.log", apps);
+            fs.writeFileSync(path.join(__dirname, "applications.json"), apps);
         } catch (error){
             console.error(error);
         }
+    });
+
+    ipcMain.on('start-apps', (event, paths) => {
+        paths.forEach(appPath => {
+            try {
+                appPath = appPath.replaceAll("\\", "/");
+                cp.exec(`start ${appPath}`, (error, stdout, stderr) => {
+                    console.log(error);
+                });
+            } catch(error) {
+                console.log(error);
+            }
+            
+        });
     });
 
     win.loadFile("app/index.html");
@@ -24,13 +39,19 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
     ipcMain.handle("loadData", () => {
         try {
-            const fileText = fs.readFileSync("c:\\temp\\test.log", "utf-8");
+            const filePath = path.join(__dirname, "applications.json");
+            if(fs.existsSync() === false) {
+                fs.writeFileSync(filePath, "[]");
+            }
+
+            const fileText = fs.readFileSync(filePath, "utf-8");
             const jsonObject = JSON.parse(fileText);
             return jsonObject;
         } catch (error){
-            console.error(error);
+            console.log(error);
         }
     });
 

@@ -9,65 +9,67 @@
         <link rel="stylesheet" type="text/css" href="./index.css" /> 
     </head>
     <body>
-        <h1 class="text-center mb-4">Start Your Engines</h1>
+        <div class="container-fluid">
+            <h1 class="text-center mb-4">Start Your Engines</h1>
 
-        <div id="application">
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Application Name" id="addApplicationName" data-bind="value: newApplicationName" />
-                        <input type="text" class="form-control" placeholder="Application Path" id="addApplicationPath" data-bind="value: newApplicationPath" />
-                        <button class="btn btn-outline-secondary" type="button" id="addApplicationButton" data-bind="click: addApplication">Add</button>
-                    </div>
+            <div id="application">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Application Name" id="addApplicationName" data-bind="value: newApplicationName" />
+                            <input type="text" class="form-control" placeholder="Application Path" id="addApplicationPath" data-bind="value: newApplicationPath" />
+                            <button class="btn btn-outline-secondary" type="button" id="addApplicationButton" data-bind="click: addApplication">Add</button>
+                        </div>
 
-                    <hr />
+                        <hr />
 
-                    <div data-bind="foreach: applications">
-                        <div class="card bg-dark text-white mb-3">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" disabled id="application__name" data-bind="value: applicationName"/>
+                        <div data-bind="foreach: applications">
+                            <div class="card bg-dark text-white mb-3">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <input type="text" class="form-control" disabled id="application__name" data-bind="value: applicationName"/>
+                                        </div>
+                                        <div class="col-4">
+                                            <button type="button" class="btn btn-info" id="application__edit" data-bind="click: edit, hidden: editing">Edit</button>
+                                            <button type="button" class="btn btn-info" id="application__delete" data-bind="click: cancel, visible: editing">Cancel</button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-info" id="application__edit" data-bind="click: edit, hidden: editing">Edit</button>
-                                        <button type="button" class="btn btn-info" id="application__delete" data-bind="click: cancel, visible: editing">Cancel</button>
+                                </div>
+                                <div class="card-body collapse" data-bind="css: { collapse: editing() === false }">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="application__launch" data-bind="checked: enabled">
+                                        <label class="form-check-label">Enabled</label>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="card-body collapse" data-bind="css: { collapse: editing() === false }">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="application__launch" data-bind="checked: enabled">
-                                    <label class="form-check-label">Enabled</label>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Application Name</label>
-                                    <input type="text" class="form-control" data-bind="value: applicationName"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Application Path</label>
-                                    <input type="text" class="form-control" data-bind="value: applicationPath"/>
-                                </div>
-                               
+                                    <div class="mb-3">
+                                        <label class="form-label">Application Name</label>
+                                        <input type="text" class="form-control" data-bind="value: applicationName"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Application Path</label>
+                                        <input type="text" class="form-control" data-bind="value: applicationPath"/>
+                                    </div>
                                 
-                                <button type="button" class="btn btn-secondary" id="application__moveup" data-bind="click: moveUp, visible: editing">Move Up</button>
-                                <button type="button" class="btn btn-secondary" id="application__movedown" data-bind="click: moveDown, visible: editing">Move Down</button>
-                                <button type="button" class="btn btn-danger" id="application__delete" data-bind="click: deleteApplication, visible: editing">Delete</button>
-                                
-                                <button type="button" class="btn btn-info" id="application__delete" data-bind="click: cancel, visible: editing">Save</button>
+                                    
+                                    <button type="button" class="btn btn-secondary" id="application__moveup" data-bind="click: moveUp, visible: editing">Move Up</button>
+                                    <button type="button" class="btn btn-secondary" id="application__movedown" data-bind="click: moveDown, visible: editing">Move Down</button>
+                                    <button type="button" class="btn btn-danger" id="application__delete" data-bind="click: deleteApplication, visible: editing">Delete</button>
+                                    
+                                    <button type="button" class="btn btn-info" data-bind="click: save, visible: editing">Save</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-lg btn-success" id="startApplicationsButton" data-bind="click: startApplications">Start</button>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-lg btn-success" id="startApplicationsButton" data-bind="click: startApplications">Start</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <hr />
+
+            <p class="text-center">Node.js <span id="node-version"></span> | Chromium <span id="chrome-version"></span> | Electron <span id="electron-version"></span></p>
         </div>
-
-        <hr />
-
-        <p class="text-center">Node.js <span id="node-version"></span> | Chromium <span id="chrome-version"></span> | Electron <span id="electron-version"></span></p>
 
         <script type="text/javascript" src="./lib/jquery-3.6.0.min.js"></script>
         <script type="text/javascript" src="./lib/bootstrap.bundle-5.3.1.min.js"></script>

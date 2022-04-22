@@ -2,7 +2,8 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
     saveData: (apps) => ipcRenderer.send("save-data", apps),
-    loadData: () => ipcRenderer.invoke("loadData")
+    loadData: () => ipcRenderer.invoke("loadData"),
+    startApplications: (paths) => ipcRenderer.send("start-apps", paths)
 });
 
 window.addEventListener('DOMContentLoaded', () => {
