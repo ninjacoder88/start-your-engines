@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
 
+const filePath = "c:\\git\\localhost\\configuration\\start-your-engines\\applications.json";
+
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 500,
@@ -14,7 +16,7 @@ const createWindow = () => {
 
     ipcMain.on('save-data', (event, apps) => {
         try {
-            fs.writeFileSync(path.join(__dirname, "applications.json"), apps);
+            fs.writeFileSync(filePath, apps);
         } catch (error){
             console.error(error);
         }
@@ -42,7 +44,6 @@ app.whenReady().then(() => {
 
     ipcMain.handle("loadData", () => {
         try {
-            const filePath = path.join(__dirname, "applications.json");
             if(fs.existsSync() === false) {
                 fs.writeFileSync(filePath, "[]");
             }
