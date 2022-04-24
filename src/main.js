@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
 
-const filePath = "c:\\git\\localhost\\configuration\\start-your-engines\\applications.json";
+const filePath = "c:\\code\\localhost\\configuration\\start-your-engines\\applications.json";
 
 const createWindow = () => {
     const win = new BrowserWindow({
