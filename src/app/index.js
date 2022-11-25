@@ -19,6 +19,7 @@ jQuery(function(){
         const self = this;
         self.applicationName = ko.observable(obj.applicationName);
         self.applicationPath = ko.observable(obj.applicationPath);
+        self.applicationParameters = ko.observable(obj.applicationParameters);
         self.enabled = ko.observable(obj.enabled ?? true);
         self.editing = ko.observable(false);
 
@@ -26,6 +27,7 @@ jQuery(function(){
             self.editing(false);
             self.applicationName(obj.applicationName);
             self.applicationPath(obj.applicationPath);
+            self.applicationParameters(obj.applicationParameters);
             self.enabled(obj.enabled ?? true);
         };
 
@@ -50,6 +52,7 @@ jQuery(function(){
 
             obj.applicationName = self.applicationName();
             obj.applicationPath = self.applicationPath();
+            Object.applicationParameters = self.applicationParameters();
             obj.enabled = self.enabled();
 
             ps.publish("applicationUpdated");
@@ -60,6 +63,7 @@ jQuery(function(){
         const self = this;
         self.newApplicationName = ko.observable("");
         self.newApplicationPath = ko.observable("");
+        self.newApplicationParams = ko.observable("");
         self.applications = ko.observableArray([]);
 
         ps.subscribe("applicationUpdated", function(message){
@@ -79,10 +83,12 @@ jQuery(function(){
 
             self.applications.push(new Application({
                     applicationName: self.newApplicationName(),
-                    applicationPath: self.newApplicationPath()
+                    applicationPath: self.newApplicationPath(),
+                    applicationParameters: self.newApplicationParams()
                 }));
             self.newApplicationName("");
             self.newApplicationPath("");
+            self.newApplicationParams("");
             saveApplications();
         };
 
@@ -90,7 +96,11 @@ jQuery(function(){
             const paths = [];
             self.applications().forEach(app => {
                 if(app.enabled() === true){
-                    paths.push(app.applicationPath());
+                    if(app.applicationParameters() !== ""){
+                        paths.push(app.applicationPath() + " " + app.applicationParameters()); 
+                    } else {
+                        paths.push(app.applicationPath());
+                    }
                 }
             });
 
@@ -101,7 +111,10 @@ jQuery(function(){
             window.electronAPI.loadData()
                 .then(data => {
                     data.forEach(d => {
-                        self.applications.push(new Application({applicationName: d.applicationName, applicationPath: d.applicationPath, enabled: d.enabled}));
+                        self.applications.push(new Application({applicationName: d.applicationName, 
+                            applicationPath: d.applicationPath, 
+                            applicationParameters: d.applicationParameters,
+                            enabled: d.enabled}));
                     });
                 }).catch(error => {
 
